@@ -11,7 +11,7 @@ namespace BusinessLogic
 {
     public class Logic
     {
-        List<Student> Students = new List<Student>() { new Student("Александр 3000", "КомБез", "Ки23-05"), new Student("Максим Абсолют", "ИСИТ", "Ки23-12Б") };   
+        List<Student> Students = new List<Student>() { new Student("Александр 3000", "КомБез", "Ки23-05"), new Student("Максим Абсолют", "ИСИТ", "Ки23-12Б"), new Student("Иван Пистолет", "ПрогИнж", "Ки23-9Б"), new Student("Иван Пистолет", "ИСИТ", "Ки23-9Б") };   
         public  void AddStudent(string Name, string Speciality, string Group)
         {
             Student newstudent = new Student(Name,Speciality,Group);
@@ -43,11 +43,23 @@ namespace BusinessLogic
             }
             return stringedstudents;
         }
-        public  List<string> CreateGystogram(string Name, string Speciality, string Group)
+        public Dictionary<string, int> CreateGystogram()
         {
-            Student newstudent = new Student(Name, Speciality, Group);
-            //Students.Add(newstudent);
-            return new List<string> { Name, Speciality, Group };
+            Dictionary<string, int> SpecialityCount = new Dictionary<string, int>();
+
+            foreach (Student student in Students)
+            {
+                if (SpecialityCount.ContainsKey(student.Speciality))
+                {
+                    SpecialityCount[student.Speciality]++;
+                }
+                else
+                {
+                    SpecialityCount[student.Speciality] = 1;
+                }
+            }
+
+            return SpecialityCount;
         }
     }
 }

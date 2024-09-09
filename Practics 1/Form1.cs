@@ -73,11 +73,36 @@ namespace Practics_1
             }
 
         }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        private void CreateChart(Dictionary<string, int> notsorted)
         {
+            chart1.Series[0].Points.Clear();
+            chart1.Series.Clear();
+            chart1.Series.Add("Распределение студентов по специальностям");
+            chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -80;
 
+            // Сортируем
+            var sortedWords = notsorted.OrderByDescending(keys => keys.Value);
+
+            int count = 0;
+
+            foreach (var kases in sortedWords)
+            {
+                if (count < 7)
+                {
+                    chart1.Series[0].Points.AddXY(kases.Key, kases.Value);
+                    count++;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, int> SpecialityCount = logic.CreateGystogram();
+            CreateChart(SpecialityCount);
+        }
     }   
 }
