@@ -26,19 +26,12 @@ namespace Practics_1
             listView1.Columns.Add("ФИО студента", 200);
             listView1.Columns.Add("Специальность", 120);
             listView1.Columns.Add("Группа", 120);
-
-            //String[] aa = { "Саня", "Комбез", "КИ23-02" };
-            //ListViewItem seconditem = new ListViewItem(aa);
-            //ListViewItem firstitem = new ListViewItem("Максим");
-            //firstitem.SubItems.Add("ИСИТ");
-            //firstitem.SubItems.Add("КИ23-12Б");
-            //listView1.Items.Add(firstitem);
-            //listView1.Items.Add(seconditem);
-
-            //listView1.Items.Add(Logic.)
+            UpdateStudents();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Функция обновления списка студентов
+        /// </summary>
+        public void UpdateStudents()
         {
             listView1.Items.Clear();
             List<String[]> students = logic.GiveStudents();
@@ -48,20 +41,44 @@ namespace Practics_1
                 listView1.Items.Add(studentitem);
             }
         }
-
+        /// <summary>
+        /// Обновление списка студентов
+        /// </summary>
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // Обновить список студентов
+            UpdateStudents();
+        }
+        /// <summary>
+        /// Открытие второй формы для добавления студента
+        /// </summary>
         private void button2_Click(object sender, EventArgs e)
         {
+            //Открыть вторую форму
             flag = false;
             new Form2(this).Show();
         }
 
+        /// <summary>
+        /// Удаление выбранного студента
+        /// </summary>
         private void button3_Click(object sender, EventArgs e)
         {
-            logic.DeleteStudent(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[1].Text, listView1.SelectedItems[0].SubItems[2].Text);   
+            // Проверяем выбран ли студент, если выбраны несколько или не выбрано вообще, то предупреждаем пользователя
+            if (listView1.SelectedItems.Count == 1)
+            {
+                logic.DeleteStudent(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[1].Text, listView1.SelectedItems[0].SubItems[2].Text);
+            }
+            UpdateStudents();
+
         }
+        /// <summary>
+        /// Открытие второй формы для добавления студента
+        /// </summary>
         private void button5_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count > 0)
+            // Передаем в форм2 необходимые данные для изменения студента
+            if (listView1.SelectedItems.Count == 1)
             {
                 flag = true;
                 Form2 form2 = new Form2(this);
@@ -69,18 +86,24 @@ namespace Practics_1
                 form2.textBox2.Text = listView1.SelectedItems[0].SubItems[1].Text;
                 form2.textBox3.Text = listView1.SelectedItems[0].SubItems[2].Text;
                 form2.Show();
+                
 
             }
 
         }
+        /// <summary>
+        /// Создание гистограммы по выданному словарю
+        /// </summary>
+        /// <param Словарь из неотсортированных элементов="notsorted"></param>
         private void CreateChart(Dictionary<string, int> notsorted)
         {
+            // Создаем базу для гистограммы
             chart1.Series[0].Points.Clear();
             chart1.Series.Clear();
             chart1.Series.Add("Распределение студентов по специальностям");
             chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -80;
 
-            // Сортируем
+            // Сортируем и добавляем значения в гистограмму
             var sortedWords = notsorted.OrderByDescending(keys => keys.Value);
 
             int count = 0;
@@ -99,6 +122,9 @@ namespace Practics_1
             }
         }
 
+        /// <summary>
+        /// Вывод гистограммы
+        /// </summary>
         private void button4_Click(object sender, EventArgs e)
         {
             Dictionary<string, int> SpecialityCount = logic.CreateGystogram();
