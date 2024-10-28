@@ -8,12 +8,15 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Model;
+using DataAccessLayer;
 
 namespace BusinessLogic
 {
     public class Logic
     {
-        List<Student> Students = new List<Student>() { new Student("Александр 3000", "КомБез", "Ки23-05"), new Student("Максим Абсолют", "ИСИТ", "Ки23-12Б"), new Student("Иван Пистолет", "ПрогИнж", "Ки23-9Б"), new Student("Иван Пистолет", "ИСИТ", "Ки23-9Б"), new Student("Елисей Автомат", "ИСИТ", "Ки23-12Б") };
+        IRepository<Student> repository = new EntityFrameworkRepository<Student>();
+        //IRepository<Student> daprepository = new RepositoryDapper<Student>();
+        List<Student> Students = new List<Student>() { /*new Student("Александр 3000", "КомБез", "Ки23-05"), new Student("Максим Абсолют", "ИСИТ", "Ки23-12Б"), new Student("Иван Пистолет", "ПрогИнж", "Ки23-9Б"), new Student("Иван Пистолет", "ИСИТ", "Ки23-9Б"), new Student("Елисей Автомат", "ИСИТ", "Ки23-12Б")*/ };
 
         /// <summary>
         /// Добавление студента в список
@@ -21,11 +24,21 @@ namespace BusinessLogic
         /// <param name="Name"> Имя студента </param>
         /// <param name="Speciality"> Специальность студента</param>
         /// <param name="Group"> Группа студента</param>
-        public void AddStudent(string Name, string Speciality, string Group)
+        public void AddStudent(string name, string speciality, string group)
         {
-            Student newstudent = new Student(Name, Speciality, Group);
-            Students.Add(newstudent);
-            
+
+
+
+
+            Student student = new Student()
+            {
+                Name = name,
+                Speciality = speciality,
+                Group = group
+            };
+            //daprepository.Create(student);
+            repository.Create(student);
+            repository.Save();                     
         }
         /// <summary>
         /// Удаление студента из списка
