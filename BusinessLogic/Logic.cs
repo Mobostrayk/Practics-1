@@ -27,9 +27,6 @@ namespace BusinessLogic
         public void AddStudent(string name, string speciality, string group)
         {
 
-
-
-
             Student student = new Student()
             {
                 Name = name,
@@ -37,8 +34,7 @@ namespace BusinessLogic
                 Group = group
             };
             //daprepository.Create(student);
-            repository.Create(student);
-            repository.Save();                     
+            repository.Create(student);                   
         }
         /// <summary>
         /// Удаление студента из списка

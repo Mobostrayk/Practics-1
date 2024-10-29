@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer
 {
-    public interface IRepository<T> : IDisposable 
+    public interface IRepository<T>
         where T : class
     {
         IEnumerable<T> GetBookList();
@@ -14,7 +14,6 @@ namespace DataAccessLayer
         void Create(T item);
         void Update(T item);
         void Delete(T item);
-        void Save();
 
     }
 }

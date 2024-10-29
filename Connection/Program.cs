@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Model;
 using DataAccessLayer;
+using BusinessLogic;
 
 namespace Connection
 {
@@ -13,7 +14,7 @@ namespace Connection
     {
         static void Main(string[] args)
         {
-            IRepository<Student> repository =  new EntityFrameworkRepository<Student>();
+           //Logic repository =  new Logic ( EntityFrameworkRepository<Student>());
         }
     }
 }

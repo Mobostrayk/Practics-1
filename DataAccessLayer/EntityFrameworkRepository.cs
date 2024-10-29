@@ -32,6 +32,7 @@ namespace DataAccessLayer
         public void Create(T obj)
         {
             _context.Set<T>().Add(obj);
+            _context.SaveChanges();
         }
         public void Update(T obj)
         {
@@ -40,31 +41,19 @@ namespace DataAccessLayer
 
             // Обновляем состояние сущности
             _context.Entry(obj).State = EntityState.Modified;
+
+            _context.SaveChanges();
         }
         public void Delete(T obj)
         {
             _context.Set<T>().Remove(obj);
+            _context.SaveChanges();
         }
         public void Save() 
         { 
             _context.SaveChanges();
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // Освобождение управляемых ресурсов (например, контекста EF)
-                _context?.Dispose();
-            }
-
-            // Освобождение неуправляемых ресурсов, если они есть
-        }
+        
     }
 }
