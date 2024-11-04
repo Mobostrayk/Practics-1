@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace ConsoleProg
 {
     /// <summary>
@@ -49,16 +48,12 @@ namespace ConsoleProg
                         case 1:
                             //Достаем список из логики и выводим его в консоль
                             students = logic.GiveStudents();
-                            int numbers = 0;
 
                             foreach (String[] student in students)
                             {
-                                numbers += 1;
-                                Console.Write(numbers + " ");
-
                                 foreach (String student2 in student)
                                 {
-                                    Console.Write($"{student2} ");
+                                    Console.Write($"{student2}    ");
                                 }
 
                                 Console.WriteLine("");
@@ -82,34 +77,30 @@ namespace ConsoleProg
                             break;
                         case 3:
                             //Удаляем студента в список
-                            Console.WriteLine("Укажите номер студента, которого вы хотите удалить");
+                            Console.WriteLine("Укажите id студента, которого вы хотите удалить");
                             int num2;
-                            string num2str = Console.ReadLine();
-                            bool isNum2 = int.TryParse(num2str, out num2);
+                            string idstr = Console.ReadLine();
+                            bool isNum2 = int.TryParse(idstr, out num2);
                             if (isNum2)
                             {
-                                int number2 = Convert.ToInt32(num2str);
-                                // Проверяем существует ли этот номер
-                                if (number2 <= students.Count && number2 >= 1)
-                                    logic.DeleteStudent(students[number2 - 1][0], students[number2 - 1][1], students[number2 - 1][2]);
+                                int id = Convert.ToInt32(idstr);
 
-                                else Console.WriteLine("Введите корректное число -_-");                               
-                                Console.WriteLine("Студент успешно удален");
+                                logic.DeleteStudent(id);
+                                Console.WriteLine("Студент успешно удален!");
+                                Console.WriteLine();
                             }
                             else  { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
 
                             break;
                         case 4:
                             //Изменяем студента
-                            Console.WriteLine("Укажите номер студента, которого вы хотите изменить");
+                            Console.WriteLine("Укажите id студента, которого вы хотите изменить");
                             int num3;
-                            string num3str = Console.ReadLine();
-                            bool isNum3 = int.TryParse(num3str, out num3);
+                            string id2str = Console.ReadLine();
+                            bool isNum3 = int.TryParse(id2str, out num3);
                             if (isNum3)
                             {
-                                int number3 = Convert.ToInt32(num3str);
-                                if (number3 <= students.Count && number3 >= 1)
-
+                                int id2 = Convert.ToInt32(id2str);
                                 {
                                     Console.WriteLine("Укажите новое имя студента, затем его специальность и после этого его группу");
                                     Console.Write("Имя: ");
@@ -121,11 +112,9 @@ namespace ConsoleProg
                                     Console.Write("Группа: ");
                                     string group2 = Console.ReadLine();
 
-                                    logic.ChangeStudent(students[number3 - 1][0], students[number3 - 1][1], students[number3 - 1][2], name2, speciality2, group2);
+                                    logic.ChangeStudent(id2, name2, speciality2, group2);
                                     Console.WriteLine("Студент успешно изменен");
                                 }
-                                else
-                                    Console.WriteLine("Введите корректное число -_-");
                             }
                             else { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
 

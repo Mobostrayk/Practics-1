@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Practics_1
 {
     public partial class Form1 : Form
@@ -23,6 +24,7 @@ namespace Practics_1
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            listView1.Columns.Add("ID", 200);
             listView1.Columns.Add("ФИО студента", 200);
             listView1.Columns.Add("Специальность", 120);
             listView1.Columns.Add("Группа", 120);
@@ -67,7 +69,7 @@ namespace Practics_1
             // Проверяем выбран ли студент, если выбраны несколько или не выбрано вообще, то предупреждаем пользователя
             if (listView1.SelectedItems.Count == 1)
             {
-                logic.DeleteStudent(listView1.SelectedItems[0].SubItems[0].Text, listView1.SelectedItems[0].SubItems[1].Text, listView1.SelectedItems[0].SubItems[2].Text);
+                logic.DeleteStudent(Convert.ToInt32(listView1.SelectedItems[0].SubItems[0].Text));
             }
             UpdateStudents();
 
@@ -82,9 +84,9 @@ namespace Practics_1
             {
                 flag = true;
                 Form2 form2 = new Form2(this);
-                form2.textBox1.Text = listView1.SelectedItems[0].SubItems[0].Text;
-                form2.textBox2.Text = listView1.SelectedItems[0].SubItems[1].Text;
-                form2.textBox3.Text = listView1.SelectedItems[0].SubItems[2].Text;
+                form2.textBox1.Text = listView1.SelectedItems[0].SubItems[1].Text;
+                form2.textBox2.Text = listView1.SelectedItems[0].SubItems[2].Text;
+                form2.textBox3.Text = listView1.SelectedItems[0].SubItems[3].Text;
                 form2.Show();
                 
 

@@ -1,57 +1,66 @@
 ﻿using Dapper;
 using Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace DataAccessLayer
 {
     public class RepositoryDapper<T>: IRepository<T> 
         where T : class, IDomainObject, new()
     {
-        static string connectionString = "data source =(localdb)" +
-            "\\MSSQLLocalDB;Initial Catalog =DbConnection;Integrated Security=True";
-        IDbConnection db = new SqlConnection(connectionString);
+        static string _connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\MobiBobi\Desktop\Bobi\3semestr\Practics-1\DataAccessLayer\Database1.mdf;Integrated Security=True";
 
         public void Create(T obj)
         {
-            var sqlQuery = "INSERT INTO Students (Name, [Group], Speciality) " +
-                "VALUES(@Name, @Group, @Speciality); SELECT CAST(SCOPE_IDENTITY() as int)";
-            int studentId = db.Query<int>(sqlQuery,obj).FirstOrDefault();
-            obj.Id = studentId;
+            var sqlQuery = "INSERT INTO Students (Name, [Group], Speciality) VALUES(@Name, @Group, @Speciality);";
+            using (var db = new SqlConnection(_connectionString))
+            {
+                db.Open();
+                db.Execute(sqlQuery, obj);
+            }
         }
         
-        public IEnumerable<T> GetBookList()
+        public IEnumerable<T> ReadAll()
         {
-            return db.Query<T>("SELECT * FROM Students").ToList();
+            var sqlQuery = "SELECT * FROM Students";
+            using (var db = new SqlConnection(_connectionString))
+            {
+                return db.Query<T>(sqlQuery).ToList();
+            }
         }
-        public T GetBook(int id)
+        public T Read(int id)
         {
+
             var sqlQuery = "SELECT * FROM Students WHERE Id = @Id";
-            return db.QuerySingleOrDefault<T>(sqlQuery, new { Id = id });
+
+            using (var db = new SqlConnection(_connectionString))
+            {
+                return db.Query<T>(sqlQuery, new { id }).FirstOrDefault();
+            }
         }
 
         public void Update(T obj)
         {
-            var query = "UPDATE Students SET Name = @Name, [Group] = @Group, Speciality = @Speciality WHERE Id = @Id";
-            db.Execute(query, obj);
+            var sqlQuery = "UPDATE Students SET Name = @Name, [Group] = @Group, Speciality = @Speciality WHERE Id = @Id";
+            using (var db = new SqlConnection(_connectionString))
+            {
+                db.Execute(sqlQuery, obj);
+            }
         }
 
-        public void Delete(T obj)
+        public void Delete(int id)
         {
-            var query = "DELETE FROM Students WHERE Id = @Id";
-            db.Execute(query, new { Id = obj.Id });
-        }
+            var sqlQuery = "DELETE FROM Students WHERE Id = @Id";
 
-        public void Save()
-        {
-            
-        }      
+            using (var db = new SqlConnection(_connectionString))
+            {
+                db.Execute(sqlQuery, new { id });
+            }
+
+        }
     }
 }

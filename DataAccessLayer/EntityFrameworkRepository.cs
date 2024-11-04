@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 using Model;
 
 
@@ -21,11 +16,11 @@ namespace DataAccessLayer
             _context = new Context();
         }
 
-        public IEnumerable<T> GetBookList()
+        public IEnumerable<T> ReadAll()
         {
             return _context.Set<T>();
         }
-        public T GetBook(int id)
+        public T Read(int id)
         {
            return _context.Set<T>().Find(id);
         }
@@ -37,23 +32,22 @@ namespace DataAccessLayer
         public void Update(T obj)
         {
             // Прикрепляем сущность к контексту
-            _context.Set<T>().Attach(obj);
+            //_context.Set<T>().Attach(obj);
 
             // Обновляем состояние сущности
             _context.Entry(obj).State = EntityState.Modified;
 
             _context.SaveChanges();
         }
-        public void Delete(T obj)
+        public void Delete(int id)
         {
-            _context.Set<T>().Remove(obj);
-            _context.SaveChanges();
+            var item = _context.Set<T>().Find(id);
+            if (item != null)
+            {
+                _context.Set<T>().Remove(item);
+                _context.SaveChanges();
+            }
         }
-        public void Save() 
-        { 
-            _context.SaveChanges();
-        }
-
         
     }
 }

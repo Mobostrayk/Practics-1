@@ -14,16 +14,18 @@ namespace BusinessLogic
 {
     public class Logic
     {
+        //ENTITY
         IRepository<Student> repository = new EntityFrameworkRepository<Student>();
-        //IRepository<Student> daprepository = new RepositoryDapper<Student>();
-        List<Student> Students = new List<Student>() { /*new Student("Александр 3000", "КомБез", "Ки23-05"), new Student("Максим Абсолют", "ИСИТ", "Ки23-12Б"), new Student("Иван Пистолет", "ПрогИнж", "Ки23-9Б"), new Student("Иван Пистолет", "ИСИТ", "Ки23-9Б"), new Student("Елисей Автомат", "ИСИТ", "Ки23-12Б")*/ };
+        List<Student> Students = new List<Student>();
+        //DAPPER
+        //IRepository<Student> repository = new RepositoryDapper<Student>();
 
         /// <summary>
         /// Добавление студента в список
         /// </summary>
-        /// <param name="Name"> Имя студента </param>
-        /// <param name="Speciality"> Специальность студента</param>
-        /// <param name="Group"> Группа студента</param>
+        /// <param name="name"> Имя студента </param>
+        /// <param name="speciality"> Специальность студента</param>
+        /// <param name="group"> Группа студента</param>
         public void AddStudent(string name, string speciality, string group)
         {
 
@@ -33,41 +35,36 @@ namespace BusinessLogic
                 Speciality = speciality,
                 Group = group
             };
-            //daprepository.Create(student);
-            repository.Create(student);                   
+            repository.Create(student);
         }
         /// <summary>
         /// Удаление студента из списка
         /// </summary>
-        /// <param name="Name"> Имя студента </param>
-        /// <param name="Speciality"> Специальность студента</param>
-        /// <param name="Group"> Группа студента</param>
-        public void DeleteStudent(string Name, string Speciality, string Group)
+        /// <param name="id"> ID студента </param>
+
+        public void DeleteStudent(int id)
         {
-            Student badstudent = Students.FirstOrDefault(a => a.Name == Name && a.Speciality == Speciality && a.Group == Group);
-            Students.Remove(badstudent);
+            repository.Delete(id);
         }
         /// <summary>
         /// Изменение определенного студента в списке
         /// </summary>
-        /// <param name="OldName"> Старое имя</param>
-        /// <param name="OldSpeciality"> Старая специальность</param>
-        /// <param name="OldGroup"> Старая группа</param>
+        /// <param name="Id"> Id студента</param>
         /// <param name="NewName"> Новое имя </param>
         /// <param name="NewSpeciality"> Новая специальность</param>
         /// <param name="NewGroup"> Новая группа </param>
-        public void  ChangeStudent(string OldName, string OldSpeciality, string OldGroup, string NewName, string NewSpeciality, string NewGroup)
+        public void ChangeStudent(int Id, string NewName, string NewSpeciality, string NewGroup)
         {
-                // Ищем нужного нам студента и переписываем его
-                for (int i = 0; i < Students.Count; i++)
+            //Ищем нужного нам студента и переписываем его
+            var student = repository.Read(Id);
+            if (student != null)
             {
-                if (Students[i].Name == OldName && Students[i].Speciality == OldSpeciality && Students[i].Group == OldGroup)
-                {
-                    Students[i].Name = NewName;
-                    Students[i].Speciality = NewSpeciality;
-                    Students[i].Group = NewGroup;
-                }
+                student.Name = NewName;
+                student.Speciality = NewSpeciality;
+                student.Group = NewGroup;
+                repository.Update(student);
             }
+
         }
         /// <summary>
         /// Выдает список студентов в виде массива String[]
@@ -75,13 +72,17 @@ namespace BusinessLogic
         /// <returns> Список студентов в виде массива String[] </returns>
         public List<String[]> GiveStudents()
         {
-            List<String[]> stringedstudents = new List<String[]>();
-            foreach (Student student in Students)
+            List<String[]> stringedStudents = new List<String[]>();
+            foreach (Student student in repository.ReadAll())
             {
-                String[] stringedstudent = new String[] { student.Name, student.Speciality, student.Group };
-                stringedstudents.Add(stringedstudent);
+                String[] selectedStudent = new string[4];
+                selectedStudent[0] = student.Id.ToString();
+                selectedStudent[1] = student.Name;
+                selectedStudent[2] = student.Speciality;
+                selectedStudent[3] = student.Group;
+                stringedStudents.Add(selectedStudent);
             }
-            return stringedstudents;
+            return stringedStudents;
         }
         /// <summary>
         /// Создает словарь для гистограммы в виде - (Специальность/кол-во студентов)
@@ -89,7 +90,8 @@ namespace BusinessLogic
         /// <returns> Словарь для гистограммы в виде - (Специальность/кол-во студентов) </returns>
         public Dictionary<string, int> CreateGystogram()
         {
-            // Создаем и наполняем словарь (Специальность/кол-во студентов)
+            var Students = repository.ReadAll();
+            //// Создаем и наполняем словарь (Специальность/кол-во студентов)
             Dictionary<string, int> SpecialityCount = new Dictionary<string, int>();
 
             foreach (Student student in Students)
@@ -103,7 +105,6 @@ namespace BusinessLogic
                     SpecialityCount[student.Speciality] = 1;
                 }
             }
-
             return SpecialityCount;
         }
     }
