@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,10 +15,14 @@ namespace Practics_1
 {
     public partial class Form1 : Form
     {
-        public Logic logic = new Logic();
+        public IKernel ninjectKernel;
+        public ILogic logic;
+
         public bool flag = false;
         public Form1()
         {
+            ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            logic = ninjectKernel.Get<Logic>();
             InitializeComponent();
         }
 

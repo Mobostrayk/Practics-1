@@ -31,8 +31,6 @@ namespace DataAccessLayer
         }
         public void Update(T obj)
         {
-            // Прикрепляем сущность к контексту
-            //_context.Set<T>().Attach(obj);
 
             // Обновляем состояние сущности
             _context.Entry(obj).State = EntityState.Modified;

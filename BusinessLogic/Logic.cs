@@ -12,65 +12,40 @@ using DataAccessLayer;
 
 namespace BusinessLogic
 {
-    public class Logic
+    public class Logic : ILogic
     {
-        //ENTITY
-        IRepository<Student> repository = new EntityFrameworkRepository<Student>();
-        List<Student> Students = new List<Student>();
-        //DAPPER
-        //IRepository<Student> repository = new RepositoryDapper<Student>();
+        public IRepository<Student> repository { get; set; }
 
-        /// <summary>
-        /// Добавление студента в список
-        /// </summary>
-        /// <param name="name"> Имя студента </param>
-        /// <param name="speciality"> Специальность студента</param>
-        /// <param name="group"> Группа студента</param>
-        public void AddStudent(string name, string speciality, string group)
+        public event EventHandler<StudentAddEventArgs> EventStudentAdded = delegate { };
+        public event EventHandler<StudentUpdateEventArgs> EventStudentUpdated = delegate { };
+        public event EventHandler<StudentSelectEventArgs> EventStudentDeleted = delegate { };
+        public event EventHandler<StudentLoadListEventArgs> EventStudentList = delegate { };
+        public event EventHandler<StudentHistogramEventArgs> EventStudentHistogram = delegate { };
+        public event EventHandler<StudentLoadedEventArgs> EventStudentLoaded = delegate { };
+
+        public Logic(IRepository<Student> Repository)
         {
+            repository = Repository;
+        }
 
-            Student student = new Student()
-            {
-                Name = name,
-                Speciality = speciality,
-                Group = group
-            };
+        public void AddStudent(Student student)
+        {
+            EventStudentAdded(this, new StudentAddEventArgs(student));
             repository.Create(student);
         }
-        /// <summary>
-        /// Удаление студента из списка
-        /// </summary>
-        /// <param name="id"> ID студента </param>
-
         public void DeleteStudent(int id)
         {
+            var student = repository.Read(id);
             repository.Delete(id);
+            EventStudentDeleted(this, new StudentSelectEventArgs(student.Id));
         }
-        /// <summary>
-        /// Изменение определенного студента в списке
-        /// </summary>
-        /// <param name="Id"> Id студента</param>
-        /// <param name="NewName"> Новое имя </param>
-        /// <param name="NewSpeciality"> Новая специальность</param>
-        /// <param name="NewGroup"> Новая группа </param>
-        public void ChangeStudent(int Id, string NewName, string NewSpeciality, string NewGroup)
+        public void ChangeStudent(Student student)
         {
-            //Ищем нужного нам студента и переписываем его
-            var student = repository.Read(Id);
-            if (student != null)
-            {
-                student.Name = NewName;
-                student.Speciality = NewSpeciality;
-                student.Group = NewGroup;
-                repository.Update(student);
-            }
+            repository.Update(student);
+            EventStudentUpdated(this, new StudentUpdateEventArgs(student));
 
         }
-        /// <summary>
-        /// Выдает список студентов в виде массива String[]
-        /// </summary>
-        /// <returns> Список студентов в виде массива String[] </returns>
-        public List<String[]> GiveStudents()
+        public void GiveStudents()
         {
             List<String[]> stringedStudents = new List<String[]>();
             foreach (Student student in repository.ReadAll())
@@ -82,30 +57,14 @@ namespace BusinessLogic
                 selectedStudent[3] = student.Group;
                 stringedStudents.Add(selectedStudent);
             }
-            return stringedStudents;
+            EventStudentList(this, new StudentLoadListEventArgs(stringedStudents));
         }
-        /// <summary>
-        /// Создает словарь для гистограммы в виде - (Специальность/кол-во студентов)
-        /// </summary>
-        /// <returns> Словарь для гистограммы в виде - (Специальность/кол-во студентов) </returns>
-        public Dictionary<string, int> CreateGystogram()
-        {
-            var Students = repository.ReadAll();
-            //// Создаем и наполняем словарь (Специальность/кол-во студентов)
-            Dictionary<string, int> SpecialityCount = new Dictionary<string, int>();
 
-            foreach (Student student in Students)
-            {
-                if (SpecialityCount.ContainsKey(student.Speciality))
-                {
-                    SpecialityCount[student.Speciality]++;
-                }
-                else
-                {
-                    SpecialityCount[student.Speciality] = 1;
-                }
-            }
-            return SpecialityCount;
+        public void CreateGystogram()
+        {
+            var students = repository.ReadAll();
+            EventStudentHistogram(this, new StudentHistogramEventArgs(students.GroupBy(s => s.Speciality)
+                                                                              .ToDictionary(g => g.Key, g => g.Count())));
         }
     }
 }

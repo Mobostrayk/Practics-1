@@ -1,4 +1,5 @@
 ﻿using BusinessLogic;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,10 @@ namespace ConsoleProg
         /// </summary>
         static void Main(string[] args)
         {
-            
-            Logic logic = new Logic();
+
+
+            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
+            ILogic logic = ninjectKernel.Get<Logic>();
             Console.WriteLine("Список команд");
             List<String[]> students = logic.GiveStudents();
             
