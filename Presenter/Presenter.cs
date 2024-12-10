@@ -23,26 +23,32 @@ namespace Presenter
             this.view.DeleteStudentEvent += OnDeleteStudent;
             this.view.UpdateStudentEvent += OnUpdateStudent;
             this.view.ShowAllStudentsEvent += OnShowAllStudents;
+            this.view.ShowGistogramm += OnShowGistogramm;
         }
-        public void OnAddStudent(object sender, StudentEventArgs e)
+        public void OnAddStudent(StudentEventArgs e)
         {
-            logic.AddStudent(Student student);
-            OnShowAllStudents(sender, EventArgs.Empty);
+            logic.AddStudent(e.Name, e.Speciality, e.Group);
+            //OnShowAllStudents();
         }
-        public void OnDeleteStudent(object sender, int id)
+        public void OnDeleteStudent(int id)
         {
             logic.DeleteStudent(id);
-            OnShowAllStudents(sender, EventArgs.Empty);
+            //OnShowAllStudents();
         }
-        public void OnUpdateStudent(object sender, StudentEventArgs e)
+        public void OnUpdateStudent(StudentEventArgs e)
         {
-            logic.Edit(e.Id, e.Name, e.Speciality, e.Group);
-            OnShowAllStudents(sender, EventArgs.Empty);
+            logic.ChangeStudent(e.Id, e.Name, e.Speciality, e.Group);
+            //OnShowAllStudents();
         }
-        public void OnShowAllStudents(object sender, EventArgs e)
+        public void OnShowAllStudents()
         {
-            var students = logic.ShowAllStudents();
+            var students = logic.GiveStudents();
             view.ShowStudents(students);
+        }
+        public void OnShowGistogramm()
+        {
+            var data = logic.CreateGystogram();
+            view.DisplayGistogramm(data);
         }
     }
 }

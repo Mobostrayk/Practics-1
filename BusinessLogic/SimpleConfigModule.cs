@@ -15,9 +15,9 @@ namespace BusinessLogic
         {
             Bind<ILogic>().To<Logic>().InSingletonScope();
             //ENTITY
-            Bind<IRepository<Student>>().To<EntityFrameworkRepository<Student>>().InSingletonScope();
+            //Bind<IRepository<Student>>().To<EntityFrameworkRepository<Student>>().InSingletonScope();
             //DAPPER
-            //Bind<IRepository<Student>>().To<RepositoryDapper<Student>>().InSingletonScope();
+            Bind<IRepository<Student>>().To<RepositoryDapper<Student>>().InSingletonScope();
         }
     }
 }

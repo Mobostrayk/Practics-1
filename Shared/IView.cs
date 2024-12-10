@@ -9,13 +9,15 @@ namespace Shared
 {
     public interface IView
     {
-        event EventHandler<StudentEventArgs> AddStudentEvent;
-        event EventHandler<int> DeleteStudentEvent;
-        event EventHandler<StudentEventArgs> UpdateStudentEvent;
-        event EventHandler ShowAllStudentsEvent;
-        event EventHandler<StudentEventArgs> ShowGistogramm;
+        event Action<StudentEventArgs> AddStudentEvent;
+        event Action<int> DeleteStudentEvent;
+        event Action<StudentEventArgs> UpdateStudentEvent;
+        event Action ShowAllStudentsEvent;
+        event Action ShowGistogramm;
 
         void ShowStudents(List<string[]> students);
+
+        void DisplayGistogramm(Dictionary<string, int> data);
     }
     public class StudentEventArgs : EventArgs
     {

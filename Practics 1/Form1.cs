@@ -1,5 +1,7 @@
 ﻿using BusinessLogic;
 using Ninject;
+using Presenter;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,20 +11,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 
-namespace Practics_1
+namespace Practics_1 
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IView
     {
+        public event Action<StudentEventArgs> AddStudentEvent = delegate { };
+        public event Action<int> DeleteStudentEvent = delegate { };
+        public event Action<StudentEventArgs> UpdateStudentEvent = delegate { };
+        public event Action ShowAllStudentsEvent = delegate { };
+        public event Action ShowGistogramm = delegate { };
+
         public IKernel ninjectKernel;
         public ILogic logic;
+        public Presenter1 presenter;
 
-        public bool flag = false;
+        public bool flag;
+        public StudentEventArgs args;
         public Form1()
         {
             ninjectKernel = new StandardKernel(new SimpleConfigModule());
             logic = ninjectKernel.Get<Logic>();
+            presenter = new Presenter1(this, logic);
+
             InitializeComponent();
         }
 
@@ -33,15 +46,23 @@ namespace Practics_1
             listView1.Columns.Add("ФИО студента", 200);
             listView1.Columns.Add("Специальность", 120);
             listView1.Columns.Add("Группа", 120);
-            UpdateStudents();
+            ShowAllStudentsEvent?.Invoke();
         }
+
+        private void Form2_DataPassed(StudentEventArgs data)
+        {
+            var args = data;   
+            if (flag == false) AddStudentEvent?.Invoke(args);
+            else UpdateStudentEvent?.Invoke(args);
+            ShowAllStudentsEvent?.Invoke();
+        }
+
         /// <summary>
         /// Функция обновления списка студентов
         /// </summary>
-        public void UpdateStudents()
+        public void ShowStudents(List<string[]> students)
         {
             listView1.Items.Clear();
-            List<String[]> students = logic.GiveStudents();
             foreach (String[] student in students)
             {
                 ListViewItem studentitem = new ListViewItem(student);
@@ -54,7 +75,7 @@ namespace Practics_1
         private void button1_Click(object sender, EventArgs e)
         {
             // Обновить список студентов
-            UpdateStudents();
+            ShowAllStudentsEvent?.Invoke();
         }
         /// <summary>
         /// Открытие второй формы для добавления студента
@@ -63,7 +84,10 @@ namespace Practics_1
         {
             //Открыть вторую форму
             flag = false;
-            new Form2(this).Show();
+            Form2 form2 = new Form2(this);
+            form2.DataPassed += Form2_DataPassed;
+            form2.Show();
+            
         }
 
         /// <summary>
@@ -74,9 +98,9 @@ namespace Practics_1
             // Проверяем выбран ли студент, если выбраны несколько или не выбрано вообще, то предупреждаем пользователя
             if (listView1.SelectedItems.Count == 1)
             {
-                logic.DeleteStudent(Convert.ToInt32(listView1.SelectedItems[0].SubItems[0].Text));
+                DeleteStudentEvent?.Invoke(Convert.ToInt32(listView1.SelectedItems[0].SubItems[0].Text));
             }
-            UpdateStudents();
+            ShowAllStudentsEvent?.Invoke();
 
         }
         /// <summary>
@@ -92,7 +116,9 @@ namespace Practics_1
                 form2.textBox1.Text = listView1.SelectedItems[0].SubItems[1].Text;
                 form2.textBox2.Text = listView1.SelectedItems[0].SubItems[2].Text;
                 form2.textBox3.Text = listView1.SelectedItems[0].SubItems[3].Text;
+                form2.DataPassed += Form2_DataPassed;
                 form2.Show();
+            
                 
 
             }
@@ -102,7 +128,7 @@ namespace Practics_1
         /// Создание гистограммы по выданному словарю
         /// </summary>
         /// <param Словарь из неотсортированных элементов="notsorted"></param>
-        private void CreateChart(Dictionary<string, int> notsorted)
+        public void DisplayGistogramm(Dictionary<string, int> notsorted)
         {
             // Создаем базу для гистограммы
             chart1.Series[0].Points.Clear();
@@ -134,8 +160,7 @@ namespace Practics_1
         /// </summary>
         private void button4_Click(object sender, EventArgs e)
         {
-            Dictionary<string, int> SpecialityCount = logic.CreateGystogram();
-            CreateChart(SpecialityCount);
+            ShowGistogramm?.Invoke();
         }
     }   
 }

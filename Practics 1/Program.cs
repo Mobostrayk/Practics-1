@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BusinessLogic;
+using Ninject;
+using Presenter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +19,13 @@ namespace Practics_1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            var kernel = new StandardKernel(new SimpleConfigModule());
+            ILogic logic = kernel.Get<ILogic>();
+            var view = new Form1();
+            var presenter = new Presenter1(view, logic);
+
+            Application.Run((Form)view);
         }
     }
 }

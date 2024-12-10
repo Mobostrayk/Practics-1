@@ -1,5 +1,7 @@
 ﻿using BusinessLogic;
 using Ninject;
+using Shared;
+using Presenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,24 +14,30 @@ namespace ConsoleProg
     /// <summary>
     /// Уровень представления в консольном приложении
     /// </summary>
-    internal class DecanatPro
+    internal class DecanatPro : IView
     {
+        public event Action<StudentEventArgs> AddStudentEvent = delegate { };
+        public event Action<int> DeleteStudentEvent = delegate { };
+        public event Action<StudentEventArgs> UpdateStudentEvent = delegate { };
+        public event Action ShowAllStudentsEvent = delegate { };
+        public event Action ShowGistogramm = delegate { };
         /// <summary>
         /// Консольная программа
         /// </summary>
         static void Main(string[] args)
         {
 
-
             IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
             ILogic logic = ninjectKernel.Get<Logic>();
+            var view = new DecanatPro();
+            var presenter = new Presenter1(view, logic);
             Console.WriteLine("Список команд");
             List<String[]> students = logic.GiveStudents();
-            
+
             // Вечный цикл для вечной работы программы
             while (true)
             {
-                
+
                 Console.WriteLine("_____________________________________________");
                 Console.WriteLine("1 - Вывести список всех студентов");
                 Console.WriteLine("2 - Добавить нового студента");
@@ -49,18 +57,7 @@ namespace ConsoleProg
                     switch (choice)
                     {
                         case 1:
-                            //Достаем список из логики и выводим его в консоль
-                            students = logic.GiveStudents();
-
-                            foreach (String[] student in students)
-                            {
-                                foreach (String student2 in student)
-                                {
-                                    Console.Write($"{student2}    ");
-                                }
-
-                                Console.WriteLine("");
-                            }
+                            view.ShowAllStudentsEvent?.Invoke();
                             Console.WriteLine("_____________________________________________");
                             break;
                         case 2:
@@ -75,7 +72,9 @@ namespace ConsoleProg
                             Console.Write("Группа: ");
                             string group = Console.ReadLine();
 
-                            logic.AddStudent(name, speciality, group);
+                            //logic.AddStudent(name, speciality, group);
+                            var args1 = new StudentEventArgs(1, name, speciality, group);
+                            view.AddStudentEvent?.Invoke(args1);
                             Console.WriteLine("Студент успешно добавлен");
                             break;
                         case 3:
@@ -88,11 +87,12 @@ namespace ConsoleProg
                             {
                                 int id = Convert.ToInt32(idstr);
 
-                                logic.DeleteStudent(id);
+                                //logic.DeleteStudent(id);
+                                view.DeleteStudentEvent?.Invoke(id);
                                 Console.WriteLine("Студент успешно удален!");
                                 Console.WriteLine();
                             }
-                            else  { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
+                            else { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
 
                             break;
                         case 4:
@@ -115,7 +115,9 @@ namespace ConsoleProg
                                     Console.Write("Группа: ");
                                     string group2 = Console.ReadLine();
 
-                                    logic.ChangeStudent(id2, name2, speciality2, group2);
+                                    //logic.ChangeStudent(id2, name2, speciality2, group2);
+                                    var args3 = new StudentEventArgs(id2, name2, speciality2, group2);
+                                    view.UpdateStudentEvent?.Invoke(args3);
                                     Console.WriteLine("Студент успешно изменен");
                                 }
                             }
@@ -125,9 +127,7 @@ namespace ConsoleProg
                         case 5:
                             // Распаковываем и сортируем словарь
                             Console.WriteLine("Кол-во студентов на специальность - специальность");
-                            Dictionary<string, int> SpecialityCount = logic.CreateGystogram();
-                            var sortedWords = SpecialityCount.OrderByDescending(keys => keys.Value);
-                            foreach (var kases in sortedWords) Console.WriteLine($"{kases.Value} - {kases.Key}");
+                            view.ShowGistogramm?.Invoke();
                             Console.WriteLine("_____________________________________________");
 
                             break;
@@ -139,5 +139,24 @@ namespace ConsoleProg
                 else { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
             }
         }
+        public void ShowStudents(List<string[]> students)
+        {
+            foreach (String[] student in students)
+            {
+                foreach (String student2 in student)
+                {
+                    Console.Write($"{student2}    ");
+                }
+
+                Console.WriteLine("");
+            }
+        }
+
+        public void DisplayGistogramm(Dictionary<string, int> SpecialityCount)
+        {
+            var sortedWords = SpecialityCount.OrderByDescending(keys => keys.Value);
+            foreach (var kases in sortedWords) Console.WriteLine($"{kases.Value} - {kases.Key}");
+        }
+
     }
 }

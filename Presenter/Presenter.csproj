@@ -49,10 +49,6 @@
       <Project>{68db1373-cf1b-4483-ac41-46fa01b6c3f0}</Project>
       <Name>BusinessLogic</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Console\ConsoleProg.csproj">
-      <Project>{8da2efb6-131e-4f22-af3d-cfba93998fbc}</Project>
-      <Name>ConsoleProg</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
       <Project>{a15cd6dc-a672-43ea-9363-567f4bb54693}</Project>
       <Name>DataAccessLayer</Name>
@@ -60,10 +56,6 @@
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{5551acc8-1f9e-42ae-b2f5-03f5f90e85d5}</Project>
       <Name>Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Practics 1\WinForms.csproj">
-      <Project>{1049d6f1-567b-438b-be53-cdec77c9bb6b}</Project>
-      <Name>WinForms</Name>
     </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{a85908d3-4c90-4cd8-9744-cd96658ada57}</Project>

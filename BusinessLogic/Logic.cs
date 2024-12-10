@@ -14,38 +14,43 @@ namespace BusinessLogic
 {
     public class Logic : ILogic
     {
+        public event Action ShowAllStudentsEvent = delegate { };
+        public event Action ShowGistogramm = delegate { };
         public IRepository<Student> repository { get; set; }
-
-        public event EventHandler<StudentAddEventArgs> EventStudentAdded = delegate { };
-        public event EventHandler<StudentUpdateEventArgs> EventStudentUpdated = delegate { };
-        public event EventHandler<StudentSelectEventArgs> EventStudentDeleted = delegate { };
-        public event EventHandler<StudentLoadListEventArgs> EventStudentList = delegate { };
-        public event EventHandler<StudentHistogramEventArgs> EventStudentHistogram = delegate { };
-        public event EventHandler<StudentLoadedEventArgs> EventStudentLoaded = delegate { };
 
         public Logic(IRepository<Student> Repository)
         {
             repository = Repository;
         }
 
-        public void AddStudent(Student student)
+        public void AddStudent(string name, string speciality, string group)
         {
-            EventStudentAdded(this, new StudentAddEventArgs(student));
+
+            Student student = new Student()
+            {
+                Name = name,
+                Speciality = speciality,
+                Group = group
+            };
             repository.Create(student);
         }
         public void DeleteStudent(int id)
         {
-            var student = repository.Read(id);
             repository.Delete(id);
-            EventStudentDeleted(this, new StudentSelectEventArgs(student.Id));
         }
-        public void ChangeStudent(Student student)
+        public void ChangeStudent(int Id, string NewName, string NewSpeciality, string NewGroup)
         {
-            repository.Update(student);
-            EventStudentUpdated(this, new StudentUpdateEventArgs(student));
-
+            //Ищем нужного нам студента и переписываем его
+            var student = repository.Read(Id);
+            if (student != null)
+            {
+                student.Name = NewName;
+                student.Speciality = NewSpeciality;
+                student.Group = NewGroup;
+                repository.Update(student);
+            }
         }
-        public void GiveStudents()
+        public List<String[]> GiveStudents()
         {
             List<String[]> stringedStudents = new List<String[]>();
             foreach (Student student in repository.ReadAll())
@@ -57,14 +62,20 @@ namespace BusinessLogic
                 selectedStudent[3] = student.Group;
                 stringedStudents.Add(selectedStudent);
             }
-            EventStudentList(this, new StudentLoadListEventArgs(stringedStudents));
+            return stringedStudents;
         }
 
-        public void CreateGystogram()
+        public Dictionary<string, int> CreateGystogram()
         {
-            var students = repository.ReadAll();
-            EventStudentHistogram(this, new StudentHistogramEventArgs(students.GroupBy(s => s.Speciality)
-                                                                              .ToDictionary(g => g.Key, g => g.Count())));
+            // Создаем и наполняем словарь (Специальность/кол-во студентов)
+            var Students = repository.ReadAll();
+            //// Создаем и наполняем словарь (Специальность/кол-во студентов)
+            Dictionary<string, int> SpecialityCount = new Dictionary<string, int>();
+
+            foreach (Student student in Students)
+                    SpecialityCount[student.Speciality] = 1;
+
+            return SpecialityCount;
         }
     }
 }
