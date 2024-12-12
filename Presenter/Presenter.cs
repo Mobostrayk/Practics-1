@@ -24,6 +24,9 @@ namespace Presenter
             this.view.UpdateStudentEvent += OnUpdateStudent;
             this.view.ShowAllStudentsEvent += OnShowAllStudents;
             this.view.ShowGistogramm += OnShowGistogramm;
+
+            this.logic.GiveStudentsEvent += view.ShowStudents;
+            this.logic.CreateGistogramm += view.DisplayGistogramm;
         }
         public void OnAddStudent(StudentEventArgs e)
         {
@@ -42,13 +45,11 @@ namespace Presenter
         }
         public void OnShowAllStudents()
         {
-            var students = logic.GiveStudents();
-            view.ShowStudents(students);
+            logic.GiveStudents();
         }
         public void OnShowGistogramm()
         {
-            var data = logic.CreateGystogram();
-            view.DisplayGistogramm(data);
+            logic.CreateDictForGist();
         }
     }
 }

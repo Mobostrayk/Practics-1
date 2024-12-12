@@ -9,8 +9,8 @@ namespace BusinessLogic
 {
     public interface ILogic
     {
-        event Action ShowAllStudentsEvent;
-        event Action ShowGistogramm;
+        event Action<List<String[]>> GiveStudentsEvent;
+        event Action<Dictionary<string, int>> CreateGistogramm;
         /// <summary>
         /// Добавление студента
         /// </summary>
@@ -30,11 +30,11 @@ namespace BusinessLogic
         /// Выдает список студентов 
         /// </summary>
         /// <returns>Список студентов </returns>
-        List<String[]> GiveStudents();
+        void GiveStudents();
         /// <summary>
         /// Создает словарь для гистограммы в виде - (Специальность/кол-во студентов)
         /// </summary>
         /// <returns> Словарь для гистограммы в виде - (Специальность/кол-во студентов) </returns>
-        Dictionary<string, int> CreateGystogram();
+        void CreateDictForGist();
     }
 }

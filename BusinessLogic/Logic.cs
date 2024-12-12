@@ -14,8 +14,8 @@ namespace BusinessLogic
 {
     public class Logic : ILogic
     {
-        public event Action ShowAllStudentsEvent = delegate { };
-        public event Action ShowGistogramm = delegate { };
+        public event Action<List<String[]>> GiveStudentsEvent = delegate { };
+        public event Action<Dictionary<string, int>> CreateGistogramm = delegate { };
         public IRepository<Student> repository { get; set; }
 
         public Logic(IRepository<Student> Repository)
@@ -50,7 +50,7 @@ namespace BusinessLogic
                 repository.Update(student);
             }
         }
-        public List<String[]> GiveStudents()
+        public void GiveStudents()
         {
             List<String[]> stringedStudents = new List<String[]>();
             foreach (Student student in repository.ReadAll())
@@ -62,10 +62,10 @@ namespace BusinessLogic
                 selectedStudent[3] = student.Group;
                 stringedStudents.Add(selectedStudent);
             }
-            return stringedStudents;
+            GiveStudentsEvent?.Invoke(stringedStudents);
         }
 
-        public Dictionary<string, int> CreateGystogram()
+        public void CreateDictForGist()
         {
             // Создаем и наполняем словарь (Специальность/кол-во студентов)
             var Students = repository.ReadAll();
@@ -75,7 +75,7 @@ namespace BusinessLogic
             foreach (Student student in Students)
                     SpecialityCount[student.Speciality] = 1;
 
-            return SpecialityCount;
+            CreateGistogramm?.Invoke(SpecialityCount);
         }
     }
 }

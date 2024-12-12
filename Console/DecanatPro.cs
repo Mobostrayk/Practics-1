@@ -31,9 +31,13 @@ namespace ConsoleProg
             ILogic logic = ninjectKernel.Get<Logic>();
             var view = new DecanatPro();
             var presenter = new Presenter1(view, logic);
-            Console.WriteLine("Список команд");
-            List<String[]> students = logic.GiveStudents();
 
+            view.Run();
+
+        }
+        public void Run()
+        {
+            Console.WriteLine("Список команд");
             // Вечный цикл для вечной работы программы
             while (true)
             {
@@ -57,7 +61,7 @@ namespace ConsoleProg
                     switch (choice)
                     {
                         case 1:
-                            view.ShowAllStudentsEvent?.Invoke();
+                            ShowAllStudentsEvent?.Invoke();
                             Console.WriteLine("_____________________________________________");
                             break;
                         case 2:
@@ -74,7 +78,7 @@ namespace ConsoleProg
 
                             //logic.AddStudent(name, speciality, group);
                             var args1 = new StudentEventArgs(1, name, speciality, group);
-                            view.AddStudentEvent?.Invoke(args1);
+                            AddStudentEvent?.Invoke(args1);
                             Console.WriteLine("Студент успешно добавлен");
                             break;
                         case 3:
@@ -88,7 +92,7 @@ namespace ConsoleProg
                                 int id = Convert.ToInt32(idstr);
 
                                 //logic.DeleteStudent(id);
-                                view.DeleteStudentEvent?.Invoke(id);
+                                DeleteStudentEvent?.Invoke(id);
                                 Console.WriteLine("Студент успешно удален!");
                                 Console.WriteLine();
                             }
@@ -117,7 +121,7 @@ namespace ConsoleProg
 
                                     //logic.ChangeStudent(id2, name2, speciality2, group2);
                                     var args3 = new StudentEventArgs(id2, name2, speciality2, group2);
-                                    view.UpdateStudentEvent?.Invoke(args3);
+                                    UpdateStudentEvent?.Invoke(args3);
                                     Console.WriteLine("Студент успешно изменен");
                                 }
                             }
@@ -127,7 +131,7 @@ namespace ConsoleProg
                         case 5:
                             // Распаковываем и сортируем словарь
                             Console.WriteLine("Кол-во студентов на специальность - специальность");
-                            view.ShowGistogramm?.Invoke();
+                            ShowGistogramm?.Invoke();
                             Console.WriteLine("_____________________________________________");
 
                             break;
