@@ -1,6 +1,4 @@
-﻿using BusinessLogic;
-using Ninject;
-using Presenter;
+﻿using Ninject;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -25,20 +23,15 @@ namespace Practics_1
         public event Action ShowGistogramm = delegate { };
 
         public IKernel ninjectKernel;
-        public ILogic logic;
-        public Presenter1 presenter;
 
         public bool flag;
         public StudentEventArgs args;
         public Form1()
         {
-            ninjectKernel = new StandardKernel(new SimpleConfigModule());
-            logic = ninjectKernel.Get<Logic>();
-            presenter = new Presenter1(this, logic);
 
             InitializeComponent();
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
 

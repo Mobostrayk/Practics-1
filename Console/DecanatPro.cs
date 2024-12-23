@@ -1,20 +1,26 @@
-﻿using BusinessLogic;
-using Ninject;
-using Shared;
-using Presenter;
+﻿using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 namespace ConsoleProg
 {
+    public static class StarterСonsole
+    {
+        
+        /// <summary>
+        /// Стартер для консоли
+        /// </summary>
+        /// <param name="console"> Консольное приложение </param>
+        public static void StartConsole(DecanatPro console)
+        {
+            console.Run();
+        }
+    }
     /// <summary>
     /// Уровень представления в консольном приложении
     /// </summary>
-    internal class DecanatPro : IView
+    public class DecanatPro : IView
     {
         public event Action<StudentEventArgs> AddStudentEvent = delegate { };
         public event Action<int> DeleteStudentEvent = delegate { };
@@ -26,12 +32,7 @@ namespace ConsoleProg
         /// </summary>
         static void Main(string[] args)
         {
-
-            IKernel ninjectKernel = new StandardKernel(new SimpleConfigModule());
-            ILogic logic = ninjectKernel.Get<Logic>();
             var view = new DecanatPro();
-            var presenter = new Presenter1(view, logic);
-
             view.Run();
 
         }
@@ -76,13 +77,12 @@ namespace ConsoleProg
                             Console.Write("Группа: ");
                             string group = Console.ReadLine();
 
-                            //logic.AddStudent(name, speciality, group);
-                            var args1 = new StudentEventArgs(1, name, speciality, group);
+                            var args1 = new StudentEventArgs(1, name, speciality, group); 
                             AddStudentEvent?.Invoke(args1);
                             Console.WriteLine("Студент успешно добавлен");
                             break;
                         case 3:
-                            //Удаляем студента в список
+                            //Удаление студента
                             Console.WriteLine("Укажите id студента, которого вы хотите удалить");
                             int num2;
                             string idstr = Console.ReadLine();
@@ -90,9 +90,8 @@ namespace ConsoleProg
                             if (isNum2)
                             {
                                 int id = Convert.ToInt32(idstr);
-
-                                //logic.DeleteStudent(id);
                                 DeleteStudentEvent?.Invoke(id);
+
                                 Console.WriteLine("Студент успешно удален!");
                                 Console.WriteLine();
                             }
@@ -100,7 +99,7 @@ namespace ConsoleProg
 
                             break;
                         case 4:
-                            //Изменяем студента
+                            //Изменение студента
                             Console.WriteLine("Укажите id студента, которого вы хотите изменить");
                             int num3;
                             string id2str = Console.ReadLine();
@@ -119,7 +118,6 @@ namespace ConsoleProg
                                     Console.Write("Группа: ");
                                     string group2 = Console.ReadLine();
 
-                                    //logic.ChangeStudent(id2, name2, speciality2, group2);
                                     var args3 = new StudentEventArgs(id2, name2, speciality2, group2);
                                     UpdateStudentEvent?.Invoke(args3);
                                     Console.WriteLine("Студент успешно изменен");
@@ -129,7 +127,7 @@ namespace ConsoleProg
 
                             break;
                         case 5:
-                            // Распаковываем и сортируем словарь
+                            // Событие вывода гистограммы
                             Console.WriteLine("Кол-во студентов на специальность - специальность");
                             ShowGistogramm?.Invoke();
                             Console.WriteLine("_____________________________________________");
@@ -143,6 +141,10 @@ namespace ConsoleProg
                 else { Console.WriteLine("Введите пожалуйста число, а не белиберду!!!!!!!!"); }
             }
         }
+        /// <summary>
+        /// Метод отображения всех студентов в консоли
+        /// </summary>
+        /// <param students="students"> Лист из студентов </param>
         public void ShowStudents(List<string[]> students)
         {
             foreach (String[] student in students)
@@ -156,6 +158,10 @@ namespace ConsoleProg
             }
         }
 
+        /// <summary>
+        /// Метод сортироваки словаря и представление его в виде гистограммы
+        /// </summary>
+        /// <param name="SpecialityCount"></param>
         public void DisplayGistogramm(Dictionary<string, int> SpecialityCount)
         {
             var sortedWords = SpecialityCount.OrderByDescending(keys => keys.Value);

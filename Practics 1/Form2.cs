@@ -1,7 +1,5 @@
 ﻿using Shared;
-using BusinessLogic;
 using Ninject;
-using Presenter;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

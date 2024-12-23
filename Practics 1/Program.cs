@@ -1,12 +1,10 @@
-﻿using BusinessLogic;
-using Ninject;
-using Presenter;
+﻿using Ninject;
 using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace Practics_1
 {
     internal static class Program
@@ -19,13 +17,24 @@ namespace Practics_1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            var kernel = new StandardKernel(new SimpleConfigModule());
-            ILogic logic = kernel.Get<ILogic>();
             var view = new Form1();
-            var presenter = new Presenter1(view, logic);
+            
 
             Application.Run((Form)view);
+        }
+    }
+    public static class StarterForm
+    {
+        /// <summary>
+        /// Стартер для формы
+        /// </summary>
+        /// <param name="form"> ВинФорма </param>
+        public static void StartForm(Form1 form)
+        {
+            Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+
+            Application.Run(form);
         }
     }
 }

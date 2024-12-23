@@ -67,13 +67,21 @@ namespace BusinessLogic
 
         public void CreateDictForGist()
         {
-            // Создаем и наполняем словарь (Специальность/кол-во студентов)
             var Students = repository.ReadAll();
-            //// Создаем и наполняем словарь (Специальность/кол-во студентов)
+            // Создаение и наполнение словаря (Специальность/кол-во студентов)
             Dictionary<string, int> SpecialityCount = new Dictionary<string, int>();
 
             foreach (Student student in Students)
+            {
+                if (SpecialityCount.ContainsKey(student.Speciality))
+                {
+                    SpecialityCount[student.Speciality]++;
+                }
+                else
+                {
                     SpecialityCount[student.Speciality] = 1;
+                }
+            }
 
             CreateGistogramm?.Invoke(SpecialityCount);
         }
