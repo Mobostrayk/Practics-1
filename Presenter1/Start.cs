@@ -43,7 +43,7 @@ namespace Presenter1
                         isCommandSelected = true; // После выбора задачи, выходим из цикла
                         break;
                     default:
-                        Console.WriteLine("Вы ввели некорректный ввод. Пожалуйста, выберите 'console' или 'form'.");
+                        Console.WriteLine("Некорректный ввод. Пожалуйста, выберите 'console' или 'form'.");
                         break;
                 }
             }

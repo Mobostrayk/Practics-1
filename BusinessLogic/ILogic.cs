@@ -14,7 +14,9 @@ namespace BusinessLogic
         /// <summary>
         /// Добавление студента
         /// </summary>
-        /// <param name="student"> Добавляемый студент </param>
+        /// <param name="name">Имя нового студента</param>
+        /// <param name="group">Группа нового студента</param>
+        /// <param name="speciality">Специальность нового студента</param>
         void AddStudent(string name, string speciality, string group);
         /// <summary>
         /// Удаление студента по ID
@@ -22,19 +24,22 @@ namespace BusinessLogic
         /// <param name="id"> ID студента </param>
         void DeleteStudent(int id);
         /// <summary>
-        /// Изменение параментров студента по ID
+        /// Изменение студента
         /// </summary>
-        /// <param name="student"> Изменяемый студент </param>
+        /// <param name="id">ID студента, которого необходимо изменить</param>
+        /// <param name="NewName">Имя студента, которого необходимо изменить</param>
+        /// <param name="NewGroup">Группа студента, которого необходимо изменить</param>
+        /// <param name="NewSpeciality">Специальность студента, которого необходимо изменить</param>
         void ChangeStudent(int Id, string NewName, string NewSpeciality, string NewGroup);
         /// <summary>
-        /// Выдает список студентов 
+        /// Получение списка студентов
         /// </summary>
-        /// <returns>Список студентов </returns>
+        /// <returns>Список студентов (или вывод об ошибке)</returns>
         void GiveStudents();
         /// <summary>
-        /// Создает словарь для гистограммы в виде - (Специальность/кол-во студентов)
+        /// Сбор статистических данных для гистограммы
         /// </summary>
-        /// <returns> Словарь для гистограммы в виде - (Специальность/кол-во студентов) </returns>
+        /// <returns>Статистические данные</returns>
         void CreateDictForGist();
     }
 }
